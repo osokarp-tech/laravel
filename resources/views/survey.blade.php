@@ -167,7 +167,6 @@
 							title: "Success!",
 							text: 'Data Saved',
                             type: "success",
-                            timer: 2000,
 						}, function(IsConfirm){
                             if (isConfirm){
 							window.location.href = "{{URL::to('home')}}";

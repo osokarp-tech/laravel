@@ -144,9 +144,11 @@ class HomeController extends Controller
 
         $save = $troubleshoot->save();
         if (!$save) {
-            return redirect('/troubleshoot')->with(['failed' => 'Failed to saving data']);
+            // return redirect('/troubleshoot')->with(['failed' => 'Failed to saving data']);
+            return response()->json(['status' => 'FAILED']);
         } else {
-            return redirect('/home')->with(['success' => 'Saving data success']);
+            // return redirect('/home')->with(['success' => 'Saving data success']);
+            return response()->json(['status' => 'SUCCESS']);
         }
     }
 
@@ -189,9 +191,11 @@ class HomeController extends Controller
         $save = $mounting->save();
 
         if (!$save) {
-            return redirect('/mounting')->with(['failed' => 'Failed to saving data']);
+            // return redirect('/mounting')->with(['failed' => 'Failed to saving data']);
+            return response()->json(['status' => 'FAILED']);
         } else {
-            return redirect('/home')->with(['success' => 'Saving data success']);
+            // return redirect('/home')->with(['success' => 'Saving data success']);
+            return response()->json(['status' => 'SUCCESS']);
         }
     }
 

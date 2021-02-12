@@ -16,7 +16,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.14.0/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.14.0/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
 
 </head>
 
@@ -24,11 +29,10 @@
     <div class="container">
         <!--container-->
 
-        <form class="form-group" method="post" action="{{url("submit_troubleshoot")}}">
+        <form id="form_troubleshoot" class="form-group">
+            {{-- method="post" action="{{url("submit_troubleshoot")}} --}}
             {{ csrf_field() }}
             <!--form-->
-
-
 
             <div id="form">
                 <!--form-->
@@ -133,12 +137,7 @@
                             <input type="text" id="input-group" placeholder="Item Operation (Barang yang digunakan)" name="perlatan">
                             <input type="text" id="input-group" placeholder="Detail Execution (Kegiatan)" name="kegiatan">
 
-
                         </div>
-
-
-
-
 
                         <div id="form">
                             <!--form-->
@@ -201,7 +200,6 @@
                         <option value="MMR 2">MMR 2</option>
                         <option value="Staging Room">Staging Room</option>
 
-
                             </select>
 
                             <h6 class="text-white">Pick your Rack (Pilih Rak)</h6>
@@ -213,7 +211,6 @@
                             </select>
 
                             <h6 class="text-white">From</h6>
-
 
                             <select id="input-group2" style="background: black;" name="rack_from">
                                 {{ $rack_from= 0 }}
@@ -233,9 +230,6 @@
 
                                 </select>
 
-
-
-
                                     <h1 class="text-white">Form Keluar Masuk Barang</h1>
                                     <h2 class="text-white">Nomor: FRM-BTS-DCDV-2019-01</h2>
 
@@ -253,11 +247,10 @@
 
                                         {{-- <input type="text" id="input-group" placeholder="Request by (Permintaan dari)" name="permintaan"> --}}
                                     <!--input6-->
-                                    <button type="submit" class="btn btn-warning text-white">Submit Form</button>
+                                    <button type="button" class="btn btn-warning text-white btn-submit">Submit Form</button>
                                     <button type="reset" class="btn btn-primary">Clear Form</button>
                                 </div>
                                 <!--form-->
-
 
         </form>
         <!--form-->
@@ -265,5 +258,51 @@
         </div>
         <!--container-->
 </body>
+<script type="text/javascript">
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+        }
+    });
+
+    $(".btn-submit").click(function(e){
+
+        e.preventDefault();
+
+        var datastring = $("#form_troubleshoot").serialize();
+        console.log(datastring);
+        $.ajax({
+            type:'POST',
+            url:"{{url('submit_troubleshoot')}}",
+            data: datastring,
+            error: function (request, error) {
+                console.log(arguments);
+                alert(" Can't do because: " + error);
+            },
+            success:function(data){
+                console.log(data);
+                if(data.status == 'SUCCESS'){
+                    Swal.fire({
+                        title: "Success!",
+                        text: 'Data Saved',
+                        type: "success",
+                    }, function(IsConfirm){
+                        if (isConfirm){
+                        location.href = "{{url("/home")}}";
+                        }
+                    });
+
+                }else if(data.status == 'FAILED'){
+
+                    Swal.fire({
+                        title: "Failed!",
+                        text: 'Saving Data Failed',
+                    }, function(){
+                    });
+                }
+            }
+        });
+    });
+</script>
 </html>
