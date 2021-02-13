@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Maintenance;
+use App\Models\MaintenanceHistory;
 use App\Models\Survey;
+use App\Models\SurveyHistory;
 use App\Models\Troubleshoot;
+use App\Models\TroubleshootHistory;
 use App\Models\Mounting;
+use App\Models\MountingHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -64,9 +68,15 @@ class HomeController extends Controller
         $maintenance->perlatan = $request->perlatan;
         $maintenance->resiko_dampak = $request->resiko_dampak;
         $maintenance->jenis_rack = $request->jenis_rack;
-        $maintenance->permintaan = $request->permintaan;
-
         $save = $maintenance->save();
+        $maintenance_id = $maintenance->maintenance_id;
+
+        $maintenanceHistory = new maintenanceHistory();
+        $maintenanceHistory->maintenance_id = $maintenance_id;
+        $maintenanceHistory->created_by = Auth::user()->id;
+        $maintenanceHistory->status = 'created';
+        $save = $maintenanceHistory->save();
+
         if (!$save) {
             // return redirect('/maintenance')->with(['failed' => 'Failed to saving data']);
             return response()->json(['status' => 'FAILED']);
@@ -94,8 +104,14 @@ class HomeController extends Controller
         $survey->time_out = $request->time_out;
         $survey->lokasi = $request->lokasi;
         $survey->akses = $request->akses;
+        $survey->save();
+        $survey_id = $survey->survey_id;
 
-        $save = $survey->save();
+        $surveyHistory = new SurveyHistory();
+        $surveyHistory->survey_id = $survey_id;
+        $surveyHistory->created_by = Auth::user()->id;
+        $surveyHistory->status = 'created';
+        $save = $surveyHistory->save();
 
         if (!$save) {
             // return redirect('/survey')->with(['failed' => 'Failed to saving data']);
@@ -141,14 +157,21 @@ class HomeController extends Controller
         $troubleshoot->serial = $request->serial;
         $troubleshoot->jumlah = $request->jumlah;
         $troubleshoot->remarks = $request->remarks;
-
         $save = $troubleshoot->save();
+        $troubleshoot_id = $troubleshoot->troubleshoot_id;
+
+        $troubleshootHistory = new troubleshootHistory();
+        $troubleshootHistory->troubleshoot_id = $troubleshoot_id;
+        $troubleshootHistory->created_by = Auth::user()->id;
+        $troubleshootHistory->status = 'created';
+
+        $save = $troubleshootHistory->save();
         if (!$save) {
-            // return redirect('/troubleshoot')->with(['failed' => 'Failed to saving data']);
             return response()->json(['status' => 'FAILED']);
+            // return redirect('/maintenance')->with(['failed' => 'Failed to saving data']);
         } else {
-            // return redirect('/home')->with(['success' => 'Saving data success']);
             return response()->json(['status' => 'SUCCESS']);
+            // return redirect('/home')->with(['success' => 'Saving data success']);
         }
     }
 
@@ -187,36 +210,42 @@ class HomeController extends Controller
         $mounting->serial = $request->serial;
         $mounting->jumlah = $request->jumlah;
         $mounting->remarks = $request->remarks;
-
         $save = $mounting->save();
+        $mounting_id = $mounting->mounting_id;
+
+        $mountingHistory = new MountingHistory();
+        $mountingHistory->mounting_id = $mounting_id;
+        $mountingHistory->created_by = Auth::user()->id;
+        $mountingHistory->status = 'created';
 
         if (!$save) {
-            // return redirect('/mounting')->with(['failed' => 'Failed to saving data']);
             return response()->json(['status' => 'FAILED']);
+            // return redirect('/mount')->with(['failed' => 'Failed to saving data']);
         } else {
-            // return redirect('/home')->with(['success' => 'Saving data success']);
             return response()->json(['status' => 'SUCCESS']);
+            // return redirect('/home')->with(['success' => 'Saving data success']);
         }
     }
 
     public function surveyview()
     {
-        $survey = Survey::all();
+        // $survey = Survey::all();
+        $survey = DB::table('survey');
         return view('hasil_survey', ['survey' => $survey]);
     }
 
     public function cetak_survey_pdf()
     {
         $survey = Survey::all();
-
         $pdf = PDF::loadview('survey_pdf', ['survey' => $survey]);
-        // return $pdf->download('laporan-pegawai-pdf');
+        // return $pdf->download('laporan-survey-pdf');
         return $pdf->stream();
     }
 
     public function maintenance_view()
     {
-        $maintenance = Maintenance::all();
+        // $maintenance = Maintenance::all();
+        $maintenance = DB::table('maintenance');
         return view('hasil_maintenance', ['maintenance' => $maintenance]);
     }
 
@@ -231,7 +260,8 @@ class HomeController extends Controller
 
     public function troubleshoot_view()
     {
-        $troubleshoot = Troubleshoot::all();
+        // $troubleshoot = Troubleshoot::all();
+        $troubleshoot = DB::table('troubleshoot');
         return view('hasil_troubleshoot', ['troubleshoot' => $troubleshoot]);
     }
 
@@ -246,7 +276,9 @@ class HomeController extends Controller
 
     public function mounting_view()
     {
-        $mounting = Mounting::all();
+        // $mounting = Mounting::all();
+        $mounting = DB::table('mounting');
+
         return view('hasil_mount', ['mounting' => $mounting]);
     }
 

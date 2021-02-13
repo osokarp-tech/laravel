@@ -42,7 +42,7 @@ class CreateTroubleshootsTable extends Migration
             $table->integer('rack_from');
             $table->integer('rack_to');
             $table->string('jenis_rack');
-            $table->string('permintaan');
+            // $table->string('permintaan');
             $table->string('io');
             $table->string('merk');
             $table->string('serial');

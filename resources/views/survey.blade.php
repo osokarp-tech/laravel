@@ -18,7 +18,6 @@
         <!-- Latest compiled JavaScript -->
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.14.0/sweetalert2.min.css" rel="stylesheet">
-
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.14.0/sweetalert2.all.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
@@ -33,8 +32,6 @@
             <form id="form_survey" class="form-group">
                 {{ csrf_field() }}
                 <!--form-->
-
-
 
                 <div id="form">
                     <!--form-->
@@ -169,7 +166,7 @@
                             type: "success",
 						}, function(IsConfirm){
                             if (isConfirm){
-							window.location.href = "{{URL::to('home')}}";
+							location.href = "{{url("/home")}}";
                             }
 						});
 
@@ -179,10 +176,7 @@
 							title: "Failed!",
 							text: 'Saving Data Failed',
 						}, function(){
-							// window.location.href = '{{url("/home")}}';
 						});
-
-
                     }
                 }
             });
